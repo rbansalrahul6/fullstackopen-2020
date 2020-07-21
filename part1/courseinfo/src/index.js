@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 
 const Header = props => (
   <h1>{props.course}</h1>

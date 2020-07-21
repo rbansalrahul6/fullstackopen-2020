@@ -7,3 +7,5 @@ Open course for full stack development in JS by Univeristy of Helsinki
 Below are my solutions to course exercises
 
 [Part 0](./part0)
+
+[Part 1](./part1)
