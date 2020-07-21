@@ -17,6 +17,8 @@ const App = () => {
 
   const handleFilter = e => setFilter(e.target.value)
 
+  const showCountry = countryName => setFilter(countryName)
+
   const countryList = filter.length
                       ? countries.filter(country => country.name.toLowerCase().includes(filter.toLowerCase()))
                       : []
@@ -28,7 +30,7 @@ const App = () => {
         {
           countryList.length > 10 
           ? 'Too many matches, specify another filter' 
-          : <Countries countryList={countryList} />
+          : <Countries countryList={countryList} showCountry={showCountry} />
         }
       </div>
     </div>
