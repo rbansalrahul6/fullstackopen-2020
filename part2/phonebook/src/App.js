@@ -44,6 +44,17 @@ const App = () => {
 
   const handleFilterInput = event => setFilter(event.target.value)
 
+  const deletePerson = person => {
+    const { id, name } = person
+    if (window.confirm(`Delete ${name} ?`)) {
+      personService
+      .deletePerson(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
+  }
+
   const personsToShow = filter.length 
                         ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) 
                         : persons
@@ -61,7 +72,10 @@ const App = () => {
         handleFormSubmit={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons 
+       persons={personsToShow}
+       deletePerson={deletePerson}
+       />
     </div>
   )
 }
