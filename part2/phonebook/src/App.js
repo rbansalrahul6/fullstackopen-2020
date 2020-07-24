@@ -20,6 +20,15 @@ const App = () => {
       })
   }, [])
 
+  const removePerson = id => setPersons(persons.filter(person => person.id !== id))
+
+  const showNotif = (message, type) => {
+    setNotif({ message, type })
+    setTimeout(() => {
+      setNotif({ message: null })
+    }, 5000)
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     const duplicate = persons.find(person => person.name === newName)
@@ -31,13 +40,11 @@ const App = () => {
           .update(newPerson)
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
-            setNotif({
-            message: `Updated ${updatedPerson.name}`,
-            type: 'success'
+            showNotif(`Updated ${updatedPerson.name}`, 'success')
           })
-          setTimeout(() => {
-            setNotif({ message: null })
-          }, 5000)
+          .catch(err => {
+            removePerson(duplicate.id)
+            showNotif(`Information of ${duplicate.name} has already been removed from server`, 'error')
           })
       }
     } else {
@@ -49,13 +56,7 @@ const App = () => {
         .create(personObj)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
-          setNotif({
-            message: `Added ${newPerson.name}`,
-            type: 'success'
-          })
-          setTimeout(() => {
-            setNotif({ message: null })
-          }, 5000)
+          showNotif(`Added ${newPerson.name}`, 'success')
           setNewName('')
           setNewNumber('')
         })
@@ -74,7 +75,11 @@ const App = () => {
       personService
       .deletePerson(id)
       .then(() => {
-        setPersons(persons.filter(person => person.id !== id))
+        removePerson(id)
+      })
+      .catch(err => {
+        removePerson(id)
+        showNotif(`Information of ${person.name} has already been removed from server`, 'error')
       })
     }
   }
