@@ -3,12 +3,14 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notif, setNotif] = useState({ message: null })
 
   useEffect(() => {
     personService
@@ -29,6 +31,13 @@ const App = () => {
           .update(newPerson)
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+            setNotif({
+            message: `Updated ${updatedPerson.name}`,
+            type: 'success'
+          })
+          setTimeout(() => {
+            setNotif({ message: null })
+          }, 5000)
           })
       }
     } else {
@@ -40,6 +49,13 @@ const App = () => {
         .create(personObj)
         .then(newPerson => {
           setPersons(persons.concat(newPerson))
+          setNotif({
+            message: `Added ${newPerson.name}`,
+            type: 'success'
+          })
+          setTimeout(() => {
+            setNotif({ message: null })
+          }, 5000)
           setNewName('')
           setNewNumber('')
         })
@@ -66,10 +82,12 @@ const App = () => {
   const personsToShow = filter.length 
                         ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) 
                         : persons
+  const notifStyle = (notif.type === 'success') ? 'success' : 'error'
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notif.message} styleClass={notifStyle} />
       <Filter filter={filter} handleFilter={handleFilterInput} />
       <h2>add a new</h2>
       <PersonForm
